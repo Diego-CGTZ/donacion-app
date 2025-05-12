@@ -28,3 +28,18 @@ html, body {
 #filtros select {
   margin-left: 5px;
 }
+
+#btn-buffer {
+  margin-top: 10px;
+  width: 100%;
+  padding: 6px;
+  font-weight: bold;
+  background-color: #e63946;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+#btn-buffer:hover {
+  background-color: #d62828;
+}

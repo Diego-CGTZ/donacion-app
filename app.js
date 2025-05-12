@@ -4,6 +4,9 @@ const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZS
 const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
 let marcadoresCentros = []; // Para borrar cuando se actualicen filtros
+let capaBuffer = null;
+let centrosGeojson = []; // guardamos todos los centros como GeoJSON
+
 
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -42,14 +45,24 @@ document.addEventListener('DOMContentLoaded', () => {
             const coords = c.geom.coordinates;
             const marker = L.marker([coords[1], coords[0]]).addTo(map);
             marker.bindPopup(`
-      <b>${c.nombre}</b><br>
-      Tipo: ${c.tipo}<br>
-      Capacidad donación: ${c.capacidad_donacion}<br>
-      Capacidad transfusión: ${c.capacidad_transfusion}<br>
-      Horario: ${c.horario}<br>
-      Sangre aceptada: ${c.tipo_sangre_aceptada.join(', ')}
-    `);
+                <b>${c.nombre}</b><br>
+                Tipo: ${c.tipo}<br>
+                Capacidad donación: ${c.capacidad_donacion}<br>
+                Capacidad transfusión: ${c.capacidad_transfusion}<br>
+                Horario: ${c.horario}<br>
+                Sangre aceptada: ${c.tipo_sangre_aceptada.join(', ')}
+                `);
             marcadoresCentros.push(marker);
+
+            centrosGeojson.push({
+                type: 'Feature',
+                properties: { ...c },
+                geometry: {
+                    type: 'Point',
+                    coordinates: c.geom.coordinates
+                }
+            });
+
         });
     }
 
@@ -120,4 +133,46 @@ document.addEventListener('DOMContentLoaded', () => {
         select.addEventListener('change', cargarCentros);
     });
 
+    document.getElementById('btn-buffer').addEventListener('click', () => {
+        alert('Haz clic en un centro de salud para ver los centros cercanos (1 km).');
+
+        // Esperamos al siguiente clic del usuario
+        map.once('click', e => {
+            const clickedPoint = turf.point([e.latlng.lng, e.latlng.lat]);
+
+            // Creamos buffer de 1 km
+            const buffer = turf.buffer(clickedPoint, 1, { units: 'kilometers' });
+
+            // Quitamos buffer anterior si existía
+            if (capaBuffer) {
+                map.removeLayer(capaBuffer);
+            }
+
+            // Dibujamos el buffer
+            capaBuffer = L.geoJSON(buffer, {
+                style: {
+                    color: '#1d3557',
+                    fillColor: '#a8dadc',
+                    fillOpacity: 0.3
+                }
+            }).addTo(map);
+
+            // Buscar centros dentro del buffer
+            const dentro = centrosGeojson.filter(f => turf.booleanPointInPolygon(f, buffer));
+
+            dentro.forEach(c => {
+                L.circleMarker([c.geometry.coordinates[1], c.geometry.coordinates[0]], {
+                    radius: 6,
+                    color: '#457b9d',
+                    fillColor: '#1d3557',
+                    fillOpacity: 0.9
+                }).addTo(map)
+                    .bindPopup(`<b>${c.properties.nombre}</b><br>Está dentro del área de análisis.`);
+            });
+
+            alert(`Se encontraron ${dentro.length} centros dentro del radio de 1 km.`);
+        });
+    });
+
 });
+
