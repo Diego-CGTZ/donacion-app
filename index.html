@@ -10,9 +10,13 @@
 </head>
 
 <body>
-    <div id="filtros">
+
+    <!-- 🧭 Panel lateral de filtros -->
+    <div id="sidebar">
+        <h2>🔍 Filtros</h2>
+
         <label>
-            Tipo:
+            Tipo de centro:
             <select id="filtro-tipo">
                 <option value="">Todos</option>
                 <option value="hospital">Hospital</option>
@@ -44,20 +48,24 @@
                 <option value="AB-">AB-</option>
             </select>
         </label>
+
         <button id="btn-buffer">🧪 Ver centros cercanos (1 km)</button>
+
+        <hr />
+        <h2>🩸 Campañas activas</h2>
+        <div id="lista-campañas"></div>
+
     </div>
 
-
+    <!-- 🌍 Mapa -->
     <div id="map"></div>
 
-    <!-- Leaflet -->
+    <!-- Scripts -->
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <!-- Supabase JS -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-    <!-- Turf.js (para más adelante) -->
     <script src="https://cdn.jsdelivr.net/npm/@turf/turf@6/turf.min.js"></script>
-    <!-- Tu JS -->
     <script src="app.js"></script>
+
 </body>
 
 </html>
