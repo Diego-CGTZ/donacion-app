@@ -1,4 +1,4 @@
-// 🛠 Reemplaza con tus datos reales de Supabase:
+
 const supabaseUrl = 'https://hppzbwbiogettgyeykid.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhwcHpid2Jpb2dldHRneWV5a2lkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcwNjgzMjQsImV4cCI6MjA2MjY0NDMyNH0.MHrRm_8270nri7LNia_msEt369amW4h5p6oGAU5YBFs';
 const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
