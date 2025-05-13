@@ -1,4 +1,3 @@
-
 const supabaseUrl = 'https://hppzbwbiogettgyeykid.supabase.co';
 const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhwcHpid2Jpb2dldHRneWV5a2lkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDcwNjgzMjQsImV4cCI6MjA2MjY0NDMyNH0.MHrRm_8270nri7LNia_msEt369amW4h5p6oGAU5YBFs';
 const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
@@ -57,55 +56,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
 });
-
-document.getElementById('btn-ruta').addEventListener('click', () => {
-  if (!navigator.geolocation) {
-    alert('Geolocalización no soportada por tu navegador.');
-    return;
-  }
-
-  navigator.geolocation.getCurrentPosition(pos => {
-    const userCoords = [pos.coords.longitude, pos.coords.latitude];
-    const userPoint = turf.point(userCoords);
-
-    // Encontrar el centro más cercano
-    let centroMasCercano = null;
-    let distanciaMinima = Infinity;
-
-    centrosGeojson.forEach(c => {
-      const dist = turf.distance(userPoint, c, { units: 'kilometers' });
-      if (dist < distanciaMinima) {
-        distanciaMinima = dist;
-        centroMasCercano = c;
-      }
-    });
-
-    if (!centroMasCercano) {
-      alert('No se encontraron centros en la base de datos.');
-      return;
-    }
-
-    // Dibujar la línea
-    const linea = turf.lineString([userCoords, centroMasCercano.geometry.coordinates]);
-    L.geoJSON(linea, {
-      color: 'blue',
-      weight: 3,
-      dashArray: '6, 4'
-    }).addTo(map);
-
-    // Marcar ubicación del usuario
-    L.marker([userCoords[1], userCoords[0]])
-      .addTo(map)
-      .bindPopup('📍 Tu ubicación')
-      .openPopup();
-
-    alert(`Centro más cercano: ${centroMasCercano.properties.nombre}\nDistancia: ${distanciaMinima.toFixed(2)} km`);
-
-  }, () => {
-    alert('No se pudo obtener tu ubicación.');
-  });
-});
-
 
 async function cargarCentros() {
     const { data, error } = await supabase.from('centros_salud').select('*');
