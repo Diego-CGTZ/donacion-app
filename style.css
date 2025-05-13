@@ -87,3 +87,19 @@ html, body {
   font-size: 15px;
   margin-bottom: 5px;
 }
+
+#btn-ruta {
+  width: 100%;
+  padding: 10px;
+  background-color: #457b9d;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-top: 10px;
+}
+#btn-ruta:hover {
+  background-color: #1d3557;
+}
